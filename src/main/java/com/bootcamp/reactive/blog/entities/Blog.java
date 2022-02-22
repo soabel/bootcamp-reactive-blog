@@ -18,6 +18,9 @@ public class Blog {
     private String id;
     @Field(name = "name")
     private String name;
-    private String author;
+    private String authorId;
+    private String url;
+    private String status;
+
 
 }
