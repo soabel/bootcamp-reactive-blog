@@ -7,27 +7,27 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@RestController
-@RequestMapping("blogs")
+//@RestController
+//@RequestMapping("blogs")
 public class BlogController {
 
     @Autowired
     private  BlogService blogService;
 
-    @GetMapping("{id}")
-    public Mono<Blog> findById(@PathVariable String id){
-        return blogService.findById(id);
-    }
+//    @GetMapping("{id}")
+//    public Mono<Blog> findById(@PathVariable String id){
+//        return blogService.findById(id);
+//    }
+//
+//    @GetMapping()
+//    public Flux<Blog> findAll(){
+//        return blogService.findAll();
+//    }
 
-    @GetMapping()
-    public Flux<Blog> findAll(){
-        return blogService.findAll();
-    }
-
-    @PostMapping()
-    public Mono<Blog> save(@RequestBody Blog blog){
-
-        return blogService.save(blog);
-    }
+//    @PostMapping()
+//    public Mono<Blog> save(@RequestBody Blog blog){
+//
+//        return blogService.save(blog);
+//    }
 
 }
