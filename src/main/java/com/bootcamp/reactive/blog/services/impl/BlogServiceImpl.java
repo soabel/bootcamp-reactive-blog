@@ -1,5 +1,6 @@
 package com.bootcamp.reactive.blog.services.impl;
 
+import com.bootcamp.reactive.blog.core.exception.BlogNotFoundException;
 import com.bootcamp.reactive.blog.entities.Blog;
 import com.bootcamp.reactive.blog.repositories.BlogRepository;
 import com.bootcamp.reactive.blog.services.BlogService;
@@ -28,5 +29,16 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Mono<Blog> save(Blog blog) {
         return blogRepository.save(blog);
+    }
+
+    @Override
+    public Mono<Void> delete(String id) {
+        return this.blogRepository.findById(id)
+                .doOnNext(b->{
+                    System.out.println("doOnNext b = " + b);
+                })
+                .switchIfEmpty(Mono.error(new BlogNotFoundException()))
+                .flatMap(blog-> this.blogRepository.delete(blog));
+
     }
 }

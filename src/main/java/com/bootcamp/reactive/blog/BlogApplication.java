@@ -17,19 +17,6 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @EnableWebFlux
 public class BlogApplication {
 
-	@Bean
-	public RouterFunction<ServerResponse> routes(BlogHandler blogHandler) {
-		return RouterFunctions.nest(RequestPredicates.path("/blogs"),
-				RouterFunctions
-						.route(GET(""), blogHandler::findAll)
-						.andRoute(GET("/{id}"), blogHandler::findById)
-						.andRoute(POST("").and(contentType(APPLICATION_JSON)), blogHandler::save)
-//						.andRoute(PUT("/{id}").and(contentType(APPLICATION_JSON)), blogHandler::update)
-//						.andRoute(DELETE("/{id}"), blogHandler::delete)
-		);
-	}
-
-
 	public static void main(String[] args) {
 		SpringApplication.run(BlogApplication.class, args);
 	}
