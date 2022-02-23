@@ -4,6 +4,7 @@ import com.bootcamp.reactive.blog.entities.Author;
 import com.bootcamp.reactive.blog.repositories.AuthorRepository;
 import com.bootcamp.reactive.blog.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -33,5 +34,17 @@ public class AuthorServiceImpl implements AuthorService {
     public Mono<Void> delete(String id) {
         return this.authorRepository.findById(id)
                 .flatMap(author-> this.authorRepository.delete(author));
+    }
+
+    @Override
+    public Flux<Author> findByEmail(String email) {
+
+//        var authorFilter = new Author();
+//        authorFilter.setEmail(email);
+//
+//        return this.authorRepository.findAll(Example.of(authorFilter));
+
+        return this.authorRepository.findByEmail(email);
+
     }
 }

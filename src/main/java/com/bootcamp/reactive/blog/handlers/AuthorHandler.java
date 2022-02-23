@@ -1,6 +1,7 @@
 package com.bootcamp.reactive.blog.handlers;
 
 import com.bootcamp.reactive.blog.entities.Author;
+import com.bootcamp.reactive.blog.entities.Blog;
 import com.bootcamp.reactive.blog.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 @Component
 public class AuthorHandler {
@@ -21,6 +23,28 @@ public class AuthorHandler {
                 .contentType(APPLICATION_JSON)
                 .body(authorService.findAll(), Author.class);
     }
+
+    public Mono<ServerResponse> findById(ServerRequest request){
+        var id = request.pathVariable("id");
+//        return ServerResponse.ok()
+//                .contentType(APPLICATION_JSON)
+//                .body(authorService.findById(id), Author.class);
+
+        return this.authorService.findById(id)
+                .flatMap(a-> ServerResponse.ok().body(Mono.just(a), Author.class))
+                .switchIfEmpty(ServerResponse.notFound().build());
+
+    }
+
+    public Mono<ServerResponse> findByEmail(ServerRequest request){
+        var email=request.queryParam("email").get();
+
+        return ServerResponse.ok()
+                .contentType(APPLICATION_JSON)
+                .body(authorService.findByEmail(email), Author.class);
+
+    }
+
 
     public Mono<ServerResponse> save(ServerRequest request){
 

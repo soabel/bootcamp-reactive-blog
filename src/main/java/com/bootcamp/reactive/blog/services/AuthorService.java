@@ -10,4 +10,5 @@ public interface AuthorService {
     Flux<Author> findAll();
     Mono<Author> save(Author author);
     Mono<Void> delete(String id);
+    Flux<Author> findByEmail(String email);
 }
