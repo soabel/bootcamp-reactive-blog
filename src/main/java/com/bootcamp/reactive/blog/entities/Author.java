@@ -15,6 +15,7 @@ import java.util.Date;
 public class Author {
     @Id
     private String id;
+    private String name;
     private String email;
     private String phone;
     private String name;

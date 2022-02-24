@@ -13,6 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 @Component
 public class AuthorHandler {
@@ -30,9 +31,27 @@ public class AuthorHandler {
         return this.authorService.findByEmail(request.pathVariable("email"))
                 .collectList()
                 .flatMap(authors -> ServerResponse.ok().body(Mono.just(authors), Blog.class))
+    public Mono<ServerResponse> findById(ServerRequest request){
+        var id = request.pathVariable("id");
+//        return ServerResponse.ok()
+//                .contentType(APPLICATION_JSON)
+//                .body(authorService.findById(id), Author.class);
+
+        return this.authorService.findById(id)
+                .flatMap(a-> ServerResponse.ok().body(Mono.just(a), Author.class))
                 .switchIfEmpty(ServerResponse.notFound().build());
 
     }
+
+    public Mono<ServerResponse> findByEmail(ServerRequest request){
+        var email=request.queryParam("email").get();
+
+        return ServerResponse.ok()
+                .contentType(APPLICATION_JSON)
+                .body(authorService.findByEmail(email), Author.class);
+
+    }
+
 
     public Mono<ServerResponse> save(ServerRequest request){
 

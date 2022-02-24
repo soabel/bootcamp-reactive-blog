@@ -14,4 +14,5 @@ public interface AuthorService {
     Mono<Author> save(Author author);
     Mono<Author> saveWithValidation(Author author);
     Mono<Void> delete(String id);
+    Flux<Author> findByEmail(String email);
 }

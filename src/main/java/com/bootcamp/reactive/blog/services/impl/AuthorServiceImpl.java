@@ -71,4 +71,16 @@ public class AuthorServiceImpl implements AuthorService {
         return this.authorRepository.findById(id)
                 .flatMap(author-> this.authorRepository.delete(author));
     }
+
+    @Override
+    public Flux<Author> findByEmail(String email) {
+
+//        var authorFilter = new Author();
+//        authorFilter.setEmail(email);
+//
+//        return this.authorRepository.findAll(Example.of(authorFilter));
+
+        return this.authorRepository.findByEmail(email);
+
+    }
 }
