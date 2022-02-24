@@ -55,17 +55,17 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Mono<Author> saveWithValidation(Author author) {
 
-        return this.authorRepository.existsByEmail(author.getEmail())
-                .flatMap(exists->
-                        {
-                            return exists ? Mono.empty():this.authorRepository.save(author);
-                        });
-
 //        return this.authorRepository.existsByEmail(author.getEmail())
 //                .flatMap(exists->
-//                {
-//                    return !exists ? this.authorRepository.save(author): Mono.error(new AuthorExistsException("Author exists"));
-//                });
+//                        {
+//                            return exists ? Mono.empty():this.authorRepository.save(author);
+//                        });
+
+        return this.authorRepository.existsByEmail(author.getEmail())
+                .flatMap(exists->
+                {
+                    return !exists ? this.authorRepository.save(author): Mono.error(new AuthorExistsException("Author exists"));
+                });
 
     }
 

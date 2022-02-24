@@ -55,24 +55,23 @@ public class AuthorHandler {
 
         var authorInput= request.bodyToMono(Author.class);
 
-        return authorInput
-                .flatMap(a-> {
-                    return authorService.findByEmail(a.getEmail())
-                            .hasElements()
-                            .flatMap(exists-> !exists ?  authorService.save(a): Mono.empty());
-                })
-                .switchIfEmpty(Mono.error(new AuthorExistsException("Author exists")))
-                .flatMap(a-> ServerResponse
-                        .ok()
-                        .contentType(APPLICATION_JSON)
-                        .body(Mono.just(a), Author.class));
+//        return authorInput
+//                .flatMap(a-> {
+//                    return authorService.findByEmail(a.getEmail())
+//                            .hasElements()
+//                            .flatMap(exists-> !exists ?  authorService.save(a): Mono.empty());
+//                })
+//                .switchIfEmpty(Mono.error(new AuthorExistsException("Author exists")))
+//                .flatMap(a-> ServerResponse
+//                        .ok()
+//                        .contentType(APPLICATION_JSON)
+//                        .body(Mono.just(a), Author.class));
 
 
 
 
 //        return authorInput
 //                .filterWhen(a-> {
-//
 //                    return authorService.findByEmail(a.getEmail())
 //                            .hasElements()
 //                            .map(success-> !success);
@@ -80,40 +79,34 @@ public class AuthorHandler {
 //                .flatMap(a-> {
 //                    return authorService.save(a);
 //                })
+//                .switchIfEmpty(Mono.error(new AuthorExistsException("Author exists")))
 //                .flatMap(a-> {
 //                    return ServerResponse
 //                            .ok()
 //                            .contentType(APPLICATION_JSON)
 //                            .body(Mono.just(a), Author.class);
-//                })
-//                .switchIfEmpty(ServerResponse.badRequest().build());
+//                });
 
 
+//
 //        return authorInput
 //                .flatMap(a-> {
 //                    return authorService.existsByEmail(a.getEmail())
 //                            .flatMap(exists-> exists ? Mono.empty():  authorService.save(a));
 //                })
+//                .switchIfEmpty(Mono.error(new AuthorExistsException("Author exists")))
 //                .flatMap(a-> ServerResponse
 //                        .ok()
 //                        .contentType(APPLICATION_JSON)
-//                        .body(Mono.just(a), Author.class))
-//                .switchIfEmpty(ServerResponse.badRequest().build());
+//                        .body(Mono.just(a), Author.class));
 
-//        return authorInput
-//                .flatMap(author-> this.authorService.saveWithValidation(author))
-//                .flatMap(a-> ServerResponse
-//                        .ok()
-//                        .contentType(APPLICATION_JSON)
-//                        .body(Mono.just(a), Author.class))
-//                .switchIfEmpty(ServerResponse.badRequest().build());
 
-//        return authorInput
-//                .flatMap(author-> this.authorService.saveWithValidation(author))
-//                .flatMap(a-> ServerResponse
-//                        .ok()
-//                        .contentType(APPLICATION_JSON)
-//                        .body(Mono.just(a), Author.class))
+        return authorInput
+                .flatMap(author-> this.authorService.saveWithValidation(author))
+                .flatMap(a-> ServerResponse
+                        .ok()
+                        .contentType(APPLICATION_JSON)
+                        .body(Mono.just(a), Author.class));
 //                .switchIfEmpty(Mono.error(new AuthorExistsException("Author exists")));
 
     }
