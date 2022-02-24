@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
+import static org.springframework.web.reactive.function.server.ServerResponse.badRequest;
 
 @Component
 public class AuthorHandler {
@@ -54,17 +55,19 @@ public class AuthorHandler {
 
         var authorInput= request.bodyToMono(Author.class);
 
-//        return authorInput
-//                .flatMap(a-> {
-//                    return authorService.findByEmail(a.getEmail())
-//                            .hasElements()
-//                            .flatMap(exists-> exists ? Mono.empty():  authorService.save(a));
-//                })
-//                .flatMap(a-> ServerResponse
-//                        .ok()
-//                        .contentType(APPLICATION_JSON)
-//                        .body(Mono.just(a), Author.class))
-//                .switchIfEmpty(ServerResponse.badRequest().build());
+        return authorInput
+                .flatMap(a-> {
+                    return authorService.findByEmail(a.getEmail())
+                            .hasElements()
+                            .flatMap(exists-> !exists ?  authorService.save(a): Mono.empty());
+                })
+                .switchIfEmpty(Mono.error(new AuthorExistsException("Author exists")))
+                .flatMap(a-> ServerResponse
+                        .ok()
+                        .contentType(APPLICATION_JSON)
+                        .body(Mono.just(a), Author.class));
+
+
 
 
 //        return authorInput
@@ -105,14 +108,26 @@ public class AuthorHandler {
 //                        .body(Mono.just(a), Author.class))
 //                .switchIfEmpty(ServerResponse.badRequest().build());
 
-        return authorInput
-                .flatMap(author-> this.authorService.saveWithValidation(author))
-                .flatMap(a-> ServerResponse
-                        .ok()
-                        .contentType(APPLICATION_JSON)
-                        .body(Mono.just(a), Author.class))
-                .switchIfEmpty(Mono.error(new AuthorExistsException("Author exists")));
+//        return authorInput
+//                .flatMap(author-> this.authorService.saveWithValidation(author))
+//                .flatMap(a-> ServerResponse
+//                        .ok()
+//                        .contentType(APPLICATION_JSON)
+//                        .body(Mono.just(a), Author.class))
+//                .switchIfEmpty(Mono.error(new AuthorExistsException("Author exists")));
 
     }
 
+    public Mono<ServerResponse> delete(ServerRequest serverRequest) {
+        String authorId = serverRequest.pathVariable("id");
+
+        return this.authorService.delete(serverRequest.pathVariable("id"))
+                .then(ServerResponse.ok().build());
+
+//
+//        return ServerResponse.ok()
+//                .contentType(APPLICATION_JSON)
+//                .body(authorService.delete(authorId),Author.class);
+
+    }
 }

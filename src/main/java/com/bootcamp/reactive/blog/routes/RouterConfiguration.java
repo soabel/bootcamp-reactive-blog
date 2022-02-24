@@ -38,6 +38,7 @@ public class RouterConfiguration {
 //                .andRoute(GET("/query/{email}"), authorHandler::findByEmail)
                 .andRoute(GET("/{id}"), authorHandler::findById)
                 .andRoute(POST("").and(accept(APPLICATION_JSON)),authorHandler::save)
+                .andRoute(DELETE("/{id}"), authorHandler::delete)
             );
     }
 

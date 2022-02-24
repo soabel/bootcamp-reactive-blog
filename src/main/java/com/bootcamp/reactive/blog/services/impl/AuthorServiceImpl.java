@@ -1,6 +1,7 @@
 package com.bootcamp.reactive.blog.services.impl;
 
 import com.bootcamp.reactive.blog.core.exception.AuthorExistsException;
+import com.bootcamp.reactive.blog.core.exception.AuthorNotFoundException;
 import com.bootcamp.reactive.blog.entities.Author;
 import com.bootcamp.reactive.blog.repositories.AuthorRepository;
 import com.bootcamp.reactive.blog.services.AuthorService;
@@ -70,8 +71,21 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Mono<Void> delete(String id) {
+
         return this.authorRepository.findById(id)
-                .flatMap(author-> this.authorRepository.delete(author));
+            .switchIfEmpty(Mono.error(new AuthorNotFoundException("Author no encontrado")))
+            .flatMap(author-> {
+                return this.authorRepository.delete(author);
+            });
+
+
+
+//        return this.authorRepository.findById(id)
+//                .flatMap(author-> this.authorRepository.delete(author));
+
+
+//        return this.authorRepository.deleteById(id);
+
     }
 
 }

@@ -53,6 +53,20 @@ public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
 
         }
 
+        if (ex instanceof AuthorNotFoundException) {
+            var internalException= (AuthorNotFoundException)ex;
+            exchange.getResponse().setStatusCode(internalException.getStatus());
+            DataBuffer dataBuffer = null;
+            try {
+                dataBuffer = bufferFactory.wrap(objectMapper.writeValueAsBytes(new HttpError(internalException.getMessage()) ));
+            } catch (JsonProcessingException e) {
+                dataBuffer = bufferFactory.wrap("".getBytes());
+            }
+            exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+            return exchange.getResponse().writeWith(Mono.just(dataBuffer));
+
+        }
+
         exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
         exchange.getResponse().getHeaders().setContentType(MediaType.TEXT_PLAIN);
         DataBuffer dataBuffer = bufferFactory.wrap("Unknown error".getBytes());
