@@ -28,10 +28,12 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Flux<Author> findByEmail(String email) {
-        var authorFind= new Author();
-        authorFind.setEmail(email);
+//        var authorFilter = new Author();
+//        authorFilter.setEmail(email);
+//
+//        return this.authorRepository.findAll(Example.of(authorFilter));
 
-        return authorRepository.findAll(Example.of(authorFind));
+        return this.authorRepository.findByEmail(email);
     }
 
     @Override
@@ -72,15 +74,4 @@ public class AuthorServiceImpl implements AuthorService {
                 .flatMap(author-> this.authorRepository.delete(author));
     }
 
-    @Override
-    public Flux<Author> findByEmail(String email) {
-
-//        var authorFilter = new Author();
-//        authorFilter.setEmail(email);
-//
-//        return this.authorRepository.findAll(Example.of(authorFilter));
-
-        return this.authorRepository.findByEmail(email);
-
-    }
 }

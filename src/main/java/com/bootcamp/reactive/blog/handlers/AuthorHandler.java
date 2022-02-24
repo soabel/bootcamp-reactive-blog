@@ -27,10 +27,6 @@ public class AuthorHandler {
                 .body(authorService.findAll(), Author.class);
     }
 
-    public Mono<ServerResponse> findByEmail(ServerRequest request) {
-        return this.authorService.findByEmail(request.pathVariable("email"))
-                .collectList()
-                .flatMap(authors -> ServerResponse.ok().body(Mono.just(authors), Blog.class))
     public Mono<ServerResponse> findById(ServerRequest request){
         var id = request.pathVariable("id");
 //        return ServerResponse.ok()
@@ -42,6 +38,7 @@ public class AuthorHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
 
     }
+
 
     public Mono<ServerResponse> findByEmail(ServerRequest request){
         var email=request.queryParam("email").get();

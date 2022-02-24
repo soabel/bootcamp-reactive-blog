@@ -18,7 +18,6 @@ public class Author {
     private String name;
     private String email;
     private String phone;
-    private String name;
     private Date birthDate;
 
 }
