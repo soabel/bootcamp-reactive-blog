@@ -1,9 +1,11 @@
 package com.bootcamp.reactive.blog.services.impl;
 
+import com.bootcamp.reactive.blog.core.exception.AuthorExistsException;
 import com.bootcamp.reactive.blog.entities.Author;
 import com.bootcamp.reactive.blog.repositories.AuthorRepository;
 import com.bootcamp.reactive.blog.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,6 +22,24 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    public Mono<Boolean> existsByEmail(String email) {
+        return authorRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Flux<Author> findByEmail(String email) {
+        var authorFind= new Author();
+        authorFind.setEmail(email);
+
+        return authorRepository.findAll(Example.of(authorFind));
+    }
+
+    @Override
+    public Flux<Author> findByName(String name) {
+        return this.authorRepository.findByName(name);
+    }
+
+    @Override
     public Flux<Author> findAll() {
         return this.authorRepository.findAll();
     }
@@ -27,6 +47,23 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Mono<Author> save(Author author) {
         return this.authorRepository.save(author);
+    }
+
+    @Override
+    public Mono<Author> saveWithValidation(Author author) {
+
+        return this.authorRepository.existsByEmail(author.getEmail())
+                .flatMap(exists->
+                        {
+                            return exists ? Mono.empty():this.authorRepository.save(author);
+                        });
+
+//        return this.authorRepository.existsByEmail(author.getEmail())
+//                .flatMap(exists->
+//                {
+//                    return !exists ? this.authorRepository.save(author): Mono.error(new AuthorExistsException("Author exists"));
+//                });
+
     }
 
     @Override

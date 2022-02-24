@@ -1,11 +1,15 @@
 package com.bootcamp.reactive.blog.handlers;
 
+import com.bootcamp.reactive.blog.core.exception.AuthorExistsException;
+import com.bootcamp.reactive.blog.core.exception.BlogNotFoundException;
 import com.bootcamp.reactive.blog.entities.Author;
+import com.bootcamp.reactive.blog.entities.Blog;
 import com.bootcamp.reactive.blog.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -22,16 +26,76 @@ public class AuthorHandler {
                 .body(authorService.findAll(), Author.class);
     }
 
+    public Mono<ServerResponse> findByEmail(ServerRequest request) {
+        return this.authorService.findByEmail(request.pathVariable("email"))
+                .collectList()
+                .flatMap(authors -> ServerResponse.ok().body(Mono.just(authors), Blog.class))
+                .switchIfEmpty(ServerResponse.notFound().build());
+
+    }
+
     public Mono<ServerResponse> save(ServerRequest request){
 
         var authorInput= request.bodyToMono(Author.class);
 
+//        return authorInput
+//                .flatMap(a-> {
+//                    return authorService.findByEmail(a.getEmail())
+//                            .hasElements()
+//                            .flatMap(exists-> exists ? Mono.empty():  authorService.save(a));
+//                })
+//                .flatMap(a-> ServerResponse
+//                        .ok()
+//                        .contentType(APPLICATION_JSON)
+//                        .body(Mono.just(a), Author.class))
+//                .switchIfEmpty(ServerResponse.badRequest().build());
+
+
+//        return authorInput
+//                .filterWhen(a-> {
+//
+//                    return authorService.findByEmail(a.getEmail())
+//                            .hasElements()
+//                            .map(success-> !success);
+//                })
+//                .flatMap(a-> {
+//                    return authorService.save(a);
+//                })
+//                .flatMap(a-> {
+//                    return ServerResponse
+//                            .ok()
+//                            .contentType(APPLICATION_JSON)
+//                            .body(Mono.just(a), Author.class);
+//                })
+//                .switchIfEmpty(ServerResponse.badRequest().build());
+
+
+//        return authorInput
+//                .flatMap(a-> {
+//                    return authorService.existsByEmail(a.getEmail())
+//                            .flatMap(exists-> exists ? Mono.empty():  authorService.save(a));
+//                })
+//                .flatMap(a-> ServerResponse
+//                        .ok()
+//                        .contentType(APPLICATION_JSON)
+//                        .body(Mono.just(a), Author.class))
+//                .switchIfEmpty(ServerResponse.badRequest().build());
+
+//        return authorInput
+//                .flatMap(author-> this.authorService.saveWithValidation(author))
+//                .flatMap(a-> ServerResponse
+//                        .ok()
+//                        .contentType(APPLICATION_JSON)
+//                        .body(Mono.just(a), Author.class))
+//                .switchIfEmpty(ServerResponse.badRequest().build());
+
         return authorInput
-                .flatMap(a-> authorService.save(a))
+                .flatMap(author-> this.authorService.saveWithValidation(author))
                 .flatMap(a-> ServerResponse
                         .ok()
                         .contentType(APPLICATION_JSON)
-                        .body(Mono.just(a), Author.class));
+                        .body(Mono.just(a), Author.class))
+                .switchIfEmpty(Mono.error(new AuthorExistsException("Author exists")));
 
     }
 

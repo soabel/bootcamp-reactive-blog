@@ -33,6 +33,7 @@ public class RouterConfiguration {
         return RouterFunctions.nest(RequestPredicates.path("/authors"),
                 RouterFunctions
                 .route(GET(""), authorHandler::findAll)
+                .andRoute(GET("/by-email/{email}"), authorHandler::findByEmail)
                 .andRoute(POST("").and(accept(APPLICATION_JSON)),authorHandler::save)
             );
     }
