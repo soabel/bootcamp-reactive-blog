@@ -28,7 +28,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public Flux<Blog> findByName(String name) {
-       return this.blogRepository.findByNameQuery(name);
+       return this.blogRepository.findByNameQuery(name, "activo");
     }
 
     @Override

@@ -12,6 +12,6 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface BlogRepository extends ReactiveMongoRepository<Blog, String> {
 
-    @Query(value="{name:{'$regex' : ?0, '$options' : 'i'}}")
-    Flux<Blog> findByNameQuery(String name);
+    @Query(value="{name:{'$regex' : ?0, '$options' : 'i'}, status: ?1 }")
+    Flux<Blog> findByNameQuery(String name, String status);
 }
