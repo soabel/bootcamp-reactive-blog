@@ -23,6 +23,7 @@ public class RouterConfiguration {
                 RouterFunctions
                         .route(GET(""), blogHandler::findAll)
                         .andRoute(GET("/{id}"), blogHandler::findById)
+                        .andRoute(GET("/by-name/{name}"), blogHandler::findByName)
                         .andRoute(POST("").and(contentType(APPLICATION_JSON)), blogHandler::save)
 //						.andRoute(PUT("/{id}").and(contentType(APPLICATION_JSON)), blogHandler::update)
                         .andRoute(DELETE("/{id}"), blogHandler::delete)

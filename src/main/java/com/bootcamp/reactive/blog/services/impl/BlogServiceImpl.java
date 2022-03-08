@@ -27,6 +27,11 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
+    public Flux<Blog> findByName(String name) {
+       return this.blogRepository.findByNameQuery(name);
+    }
+
+    @Override
     public Mono<Blog> save(Blog blog) {
         return blogRepository.save(blog);
     }

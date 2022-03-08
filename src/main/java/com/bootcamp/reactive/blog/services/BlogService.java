@@ -7,6 +7,7 @@ import reactor.core.publisher.Mono;
 public interface BlogService {
     Mono<Blog> findById(String id);
     Flux<Blog> findAll();
+    Flux<Blog> findByName(String name);
     Mono<Blog> save(Blog blog);
     Mono<Void> delete(String id);
 }

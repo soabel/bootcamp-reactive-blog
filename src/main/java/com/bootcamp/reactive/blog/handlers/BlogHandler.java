@@ -1,5 +1,6 @@
 package com.bootcamp.reactive.blog.handlers;
 
+import com.bootcamp.reactive.blog.entities.Author;
 import com.bootcamp.reactive.blog.entities.Blog;
 import com.bootcamp.reactive.blog.services.BlogService;
 import com.mongodb.internal.connection.Server;
@@ -33,6 +34,13 @@ public class BlogHandler {
                 .flatMap(blog -> ServerResponse.ok().body(Mono.just(blog), Blog.class))
                 .switchIfEmpty(ServerResponse.notFound().build());
 
+    }
+
+    public Mono<ServerResponse> findByName(ServerRequest request) {
+        var name = request.pathVariable("name");
+        return ServerResponse.ok()
+                .contentType(APPLICATION_JSON)
+                .body(blogService.findByName(name), Author.class);
     }
 
     public Mono<ServerResponse> save(ServerRequest request) {
